@@ -16,6 +16,9 @@ import random
 # Third-party libraries
 import numpy as np
 
+# e.g. net = Network([2, 3, 1])
+# -> representing 2 neurons on first layer, 3 second, 1 final.
+
 class Network(object):
 
     def __init__(self, sizes):
@@ -29,11 +32,15 @@ class Network(object):
         layer is assumed to be an input layer, and by convention we
         won't set any biases for those neurons, since biases are only
         ever used in computing the outputs from later layers."""
-        self.num_layers = len(sizes)
-        self.sizes = sizes
+        self.num_layers = len(sizes) # number of layers
+        self.sizes = sizes # same array as params
         self.biases = [np.random.randn(y, 1) for y in sizes[1:]]
+        # array/vector of random biases corresponding to layers 2-n (incides 1 to n-1)
+        # bias can be visualized perceptron-wise as threshold.
+        # [b_1, b_2, b_3 ...]
         self.weights = [np.random.randn(y, x)
                         for x, y in zip(sizes[:-1], sizes[1:])]
+        # pairing
 
     def feedforward(self, a):
         """Return the output of the network if ``a`` is input."""
