@@ -22,7 +22,7 @@ import numpy as np
 class Network(object):
 
     def __init__(self, sizes):
-        
+
         """The list ``sizes`` contains the number of neurons in the
         respective layers of the network.  For example, if the list
         was [2, 3, 1] then it would be a three-layer network, with the
@@ -35,29 +35,29 @@ class Network(object):
         ever used in computing the outputs from later layers."""
         self.num_layers = len(sizes) # number of layers
         self.sizes = sizes # same array as params
-        
+
         # ----------------------------------------------------------------------------------
-        
-        # If positive int_like arguments are provided, randn generates an array of shape (d0, d1, ..., dn), 
-        # filled with random floats sampled from a univariate “normal” (Gaussian) distribution of mean 0 and variance 1. 
+
+        # If positive int_like arguments are provided, randn generates an array of shape (d0, d1, ..., dn),
+        # filled with random floats sampled from a univariate “normal” (Gaussian) distribution of mean 0 and variance 1.
         # A single float randomly sampled from the distribution is returned if no argument is provided.
         # Reference on understanding randn: https://www.geeksforgeeks.org/numpy-random-randn-python/
-        
+
         # 2D array of y values of random numbers each size 1 (redundant) & y representing layer
-        # so in essence what's going on is, from 2nd layer onwards, you have 
+        # so in essence what's going on is, from 2nd layer onwards, you have
         self.biases = [np.random.randn(y, 1) for y in sizes[1:]]
         # array/vector of random biases corresponding to layers 2-n (incides 1 to n-1)
         # bias can be visualized perceptron-wise as threshold.
         # Layer 2 [b_1, b_2, b_3 ...]; Layer 3 [b_a, b_b, b_c, b_d, ...]; Layer 4 [b_alph, b_bet, b_gamm]...
-        
+
         # ---------------------------------------------------------------------------------------------------------------------
-        
+
         # 2D array of y values of random numbers each size x, where y represents 1st layer, and x represents second layer
         # combination is basically the "handshake rule" of probability n(n-1) /2 except /2 isn't requried since we're starting array
         # only till y ends.
         # Hence each represents a pair between each perceptron (or actually sigmoid neuron) structurally accessed in the array by layer from which
         # "connection" between sigmoid represents.
-        
+
         self.weights = [np.random.randn(y, x)
                         for x, y in zip(sizes[:-1], sizes[1:])]
         # pairing
@@ -66,8 +66,17 @@ class Network(object):
         """Return the output of the network if ``a`` is input."""
         for b, w in zip(self.biases, self.weights):
             a = sigmoid(np.dot(w, a)+b)
+            # in more mathematical terms: a′=σ(wa+b)
+            # [σ representing sigmoid function = 1/(1 + e^(-z)]
         return a
 
+    # implements stochastic gradient descent (SGD)
+    # @params
+    # [training_data : list of tuples (x, y) representing the training inputs and corresponding desired outputs]
+    # [epochs : the number of times we want to utilize SGD (i.e. number of sample sizes)
+    # [mini_batch_size : size of mini-batches to use while sampling
+    # [eta : learning rate, η]
+    # [test_data=None]
     def SGD(self, training_data, epochs, mini_batch_size, eta,
             test_data=None):
         """Train the neural network using mini-batch stochastic
