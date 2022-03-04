@@ -88,19 +88,24 @@ class Network(object):
         epoch, and partial progress printed out.  This is useful for
         tracking progress, but slows things down substantially."""
         if test_data: n_test = len(test_data)
+        # If the optional argument test_data is supplied,
+        # then the program will evaluate the network after each epoch of training,
+        # and print out partial progress.
         n = len(training_data)
-        for j in xrange(epochs):
-            random.shuffle(training_data)
+        for j in xrange(epochs): # in each epoch
+            random.shuffle(training_data) # randomly shuffling training data
             mini_batches = [
-                training_data[k:k+mini_batch_size]
-                for k in xrange(0, n, mini_batch_size)]
-            for mini_batch in mini_batches:
+                training_data[k:k+mini_batch_size] # partitioning into mini_batches
+                for k in xrange(0, n, mini_batch_size)] # k is the mini_batch_size, split by n,
+                # i.e., k is 0, k+mini_batch_size + 1, etc.
+            for mini_batch in mini_batches: # for all mini_batches apply a single step of gradient descent
                 self.update_mini_batch(mini_batch, eta)
-            if test_data:
+            if test_data: # once done, evaluating probability?
                 print "Epoch {0}: {1} / {2}".format(
                     j, self.evaluate(test_data), n_test)
             else:
                 print "Epoch {0} complete".format(j)
+
 
     def update_mini_batch(self, mini_batch, eta):
         """Update the network's weights and biases by applying
@@ -111,6 +116,9 @@ class Network(object):
         nabla_w = [np.zeros(w.shape) for w in self.weights]
         for x, y in mini_batch:
             delta_nabla_b, delta_nabla_w = self.backprop(x, y)
+             # backpropagation algorithm -> fast way of computing the gradient of the cost function.
+            # So update_mini_batch works simply by computing these gradients for every training example
+            # in the mini_batch, and then updating self.weights and self.biases appropriately.
             nabla_b = [nb+dnb for nb, dnb in zip(nabla_b, delta_nabla_b)]
             nabla_w = [nw+dnw for nw, dnw in zip(nabla_w, delta_nabla_w)]
         self.weights = [w-(eta/len(mini_batch))*nw
