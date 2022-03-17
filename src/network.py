@@ -101,10 +101,10 @@ class Network(object):
             for mini_batch in mini_batches: # for all mini_batches apply a single step of gradient descent
                 self.update_mini_batch(mini_batch, eta)
             if test_data: # once done, evaluating probability?
-                print "Epoch {0}: {1} / {2}".format(
+                print ("Epoch {0}: {1} / {2}").format(
                     j, self.evaluate(test_data), n_test)
             else:
-                print "Epoch {0} complete".format(j)
+                print ("Epoch {0} complete").format(j)
 
 
     def update_mini_batch(self, mini_batch, eta):
